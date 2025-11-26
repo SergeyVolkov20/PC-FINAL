@@ -1,84 +1,6 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COLIZEUM - Компьютерный клуб</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.8rem;
-        }
-         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://avatars.mds.yandex.net/get-images-cbir/4472791/wmcCEAwwJ7NHishXofw8xg8261/orig') no-repeat center center;
-            background-size: cover;
-            padding: 100px 0;
-            text-align: center;
-}
-        .price-card {
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
-            height: 100%;
-        }
-        .price-highlight {
-            color: #ffcc00;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .btn-book {
-            background-color: #ffcc00;
-            color: #000;
-            font-weight: bold;
-            padding: 10px 30px;
-            border-radius: 30px;
-            border: none;
-        }
-        .btn-book:hover {
-            background-color: #e6b800;
-        }
-        .section-title {
-            border-bottom: 2px solid #ffcc00;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            display: inline-block;
-        }
-        footer {
-            background-color: #111;
-            padding: 30px 0;
-            margin-top: 50px;
-        }
-        .qr-code {
-            background-color: white;
-            padding: 10px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        .price-header {
-            background-color: #2a2a2a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">COLIZEUM</a>
-            <span class="navbar-text">ARENA LOUNGE BAR</span>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
+{% block content %}
     <section class="hero-section">
         <div class="container">
             <h1 class="display-4 mb-4">COLIZEUM</h1>
@@ -88,23 +10,24 @@
         </div>
     </section>
 
-     
-    <section class="py-5">
+    <section id="about" class="py-5">
         <div class="container">
             <h2 class="section-title">COLIZEUM ARENA LOUNGE BAR</h2>
-            <div class="row">
-                <div class="col-md-8">
-                    <p>COLIZEUM Сургут - это компьютерный клуб, оснащенный передовым оборудованием, которое соответствует всем требованиям современных игр.</p>
-                    <h4 class="mt-4">АДРЕС: ПРОСПЕКТ МИРА 55, СУРГУТ</h4>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center">
+                        <p class="lead">COLIZEUM Сургут - это компьютерный клуб, оснащенный передовым оборудованием, которое соответствует всем требованиям современных игр.</p>
+                        <h4 class="mt-4 text-primary">АДРЕС: ПРОСПЕКТ МИРА 55, СУРГУТ</h4>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-5 bg-dark">
+    <section id="prices" class="py-5 bg-dark">
         <div class="container">
-            <h2 class="section-title text-white">ЦЕНЫ</h2>
-            <p class="mb-4 text-center">Одиночное игровое место, современное оборудование и комфортная атмосфера.</p>
+            <h2 class="section-title">ЦЕНЫ</h2>
+            <p class="mb-4 text-center lead">Одиночное игровое место, современное оборудование и комфортная атмосфера.</p>
             
             <div class="row">
                 <div class="col-md-4">
@@ -112,15 +35,16 @@
                         <div class="price-header">
                             <h4>17:00 - 08:00</h4>
                         </div>
-                        <hr>
-                        <p class="price-highlight">140 ₽</p>
-                        <h5>1 час</h5>
-                        <p class="price-highlight">380 ₽</p>
-                        <h5>Пакет вечер</h5>
-                        <h5>3 часа (17:00 - 20:00)</h5>
-                         <p class="price-highlight">570 ₽</p>
-                        <h5>Пакет вечер</h5>
-                        <h5>5 часов (15:00 - 20:00)</h5>
+                        <div class="price-content">
+                            <p class="price-highlight">140 ₽</p>
+                            <h5>1 час</h5>
+                            <p class="price-highlight">380 ₽</p>
+                            <h5>Пакет вечер</h5>
+                            <p>3 часа (17:00 - 20:00)</p>
+                            <p class="price-highlight">570 ₽</p>
+                            <h5>Пакет вечер</h5>
+                            <p>5 часов (15:00 - 20:00)</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -129,12 +53,11 @@
                         <div class="price-header">
                             <h4>Ночной тариф</h4>
                         </div>
-                    
-                        <hr>
-                          <p class="price-highlight">550 ₽</p>
-                        <h5>Пакет Ночь</h5>
-                        <h5>10 часов (22:00 - 08:00)</h5>
-                      
+                        <div class="price-content">
+                            <p class="price-highlight">550 ₽</p>
+                            <h5>Пакет Ночь</h5>
+                            <p>10 часов (22:00 - 08:00)</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -143,109 +66,115 @@
                         <div class="price-header">
                             <h4>08:00 - 17:00</h4>
                         </div>
-                    
-                        <hr>
-                         <p class="price-highlight">120 ₽</p>
-                        <h5>1 час</h5>
-                    
-                        <p class="price-highlight">320 ₽</p>
-                        <h5>Пакет День</h5>
-                        <p>4 часа (12:00 - 16:00)</p>
-                        <p class="price-highlight">490 ₽</p>
-                        <h5>Пакет День</h5>
-                        <p>6 часов (12:00 - 18:00)</p>
+                        <div class="price-content">
+                            <p class="price-highlight">120 ₽</p>
+                            <h5>1 час</h5>
+                            <p class="price-highlight">320 ₽</p>
+                            <h5>Пакет День</h5>
+                            <p>4 часа (12:00 - 16:00)</p>
+                            <p class="price-highlight">490 ₽</p>
+                            <h5>Пакет День</h5>
+                            <p>6 часов (12:00 - 18:00)</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="booking" class="py-5">
-        <div class="container text-center">
-            <h2 class="section-title">БРОНИРОВАНИЕ</h2>
-            <p class="mb-4">Забронируйте место через QR-код на вашем телефоне</p>
-            
-            <div class="qr-code mb-4">
-                <!-- Замените на реальный QR-код -->
-                <img src="https://via.placeholder.com/200x200/000/fff?text=QR-CODE" alt="QR код для бронирования">
-            </div>
-            
-            <p>Наведите камеру телефона на QR-код для перехода к бронированию</p>
-            <a href="#" class="btn btn-book mt-3">ЗАБРОНИРОВАТЬ ОНЛАЙН</a>
-        </div>
-    </section>
-
-
-    <section class="py-5">
-        <div class="container">
-            <h2 class="section-title">Accessories</h2>
-            
-            <div class="text-center mb-5">
+<section id="booking" class="py-5">
+    <div class="container text-center">
+        <h2 class="section-title">БРОНИРОВАНИЕ</h2>
+        <p class="lead mb-4">Забронируйте место через QR-код на вашем телефоне</p>
         
-                <p class="mb-4">
-                    <strong>Common room</strong> | 
-                    <strong>Буткемп - VIP</strong> | 
-                    <strong>Буткемп - PRO</strong> | 
-                    <strong>Аренда TV 65</strong>
-                </p>
-            </div>
+        <div class="qr-code mb-4">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http://127.0.0.1:8000/booking" 
+                 alt="QR код для бронирования" 
+                 width="200" 
+                 height="200">
+        </div>
+        
+        <p class="mb-4">Наведите камеру телефона на QR-код для перехода к бронированию</p>
+        <a href="/booking" class="btn btn-book">ЗАБРОНИРОВАТЬ ОНЛАЙН</a>
+    </div>
+</section>
 
-            <hr class="my-5">
+<section class="accessories-section py-5">
+    <div class="container">
+        <h2 class="section-title">ОБОРУДОВАНИЕ</h2>
+        
+        <div class="accessories-badges text-center mb-5">
+            <p class="mb-0 h4">
+                <strong>Common room</strong> | 
+                <strong>Буткемп - VIP</strong> | 
+                <strong>Буткемп - PRO</strong> | 
+                <strong>Аренда TV 65</strong>
+            </p>
+        </div>
 
-            <div class="mb-5">
-                <h4 class="text-center mb-4"><strong>Железо</strong></h4>
-                <table class="table table-dark table-bordered text-center">
-                    <tbody>
-                        <tr>
-                            <td><strong>Процессор</strong></td>
-                            <td><strong>I5 - 9400F</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Видеокарта</strong></td>
-                            <td><strong>RTX2060</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Оперативная память</strong></td>
-                            <td><strong>16GB DDR4</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>SSD</strong></td>
-                            <td><strong>120GB</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="row align-items-start">
+        
+                    <div class="col-md-6">
+                        <div class="text-center mb-3">
+                            <h3 class="text-primary mb-3"><strong>ЖЕЛЕЗО</strong></h3>
+                        </div>
+                        <div class="specs-container">
+                            <table class="table specs-table">
+                                <tbody>
+                                    <tr>
+                                        <td>ПРОЦЕССОР</td>
+                                        <td>I5 - 9400F</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ВИДЕОКАРТА</td>
+                                        <td>RTX2060</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ОПЕРАТИВНАЯ ПАМЯТЬ</td>
+                                        <td>16GB DDR4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SSD</td>
+                                        <td>120GB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <hr class="my-5">
-
-            <div>
-                <h4 class="text-center mb-4"><strong>Периферия</strong></h4>
-                <table class="table table-dark table-bordered text-center">
-                    <tbody>
-                        <tr>
-                            <td><strong>Монитор</strong></td>
-                            <td><strong>ASUS 27" - 165Hz</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Клавиатура</strong></td>
-                            <td><strong>ASUS TUF Gaming K7</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Мышь</strong></td>
-                            <td><strong>ASUS TUF M3</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Наушники</strong></td>
-                            <td><strong>ASUS TUF H3</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+                
+                    <div class="col-md-6">
+                        <div class="text-center mb-3">
+                            <h3 class="text-primary mb-3"><strong>ПЕРИФЕРИЯ</strong></h3>
+                        </div>
+                        <div class="specs-container">
+                            <table class="table specs-table">
+                                <tbody>
+                                    <tr>
+                                        <td>МОНИТОР</td>
+                                        <td>ASUS 27" - 165Hz</td>
+                                    </tr>
+                                    <tr>
+                                        <td>КЛАВИАТУРА</td>
+                                        <td>ASUS TUF Gaming K7</td>
+                                    </tr>
+                                    <tr>
+                                        <td>МЫШЬ</td>
+                                        <td>ASUS TUF M3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>НАУШНИКИ</td>
+                                        <td>ASUS TUF H3</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
-    <footer>
-        <div class="container text-center">
-            <p>&copy; 2025 COLIZEUM. Все права защищены.</p>
-            <p>Проспект Мира 55, Сургут</p>
-        </div>
-    </footer>
+    </div>
+</section>
+{% endblock %}

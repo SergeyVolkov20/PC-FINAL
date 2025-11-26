@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from decimal import Decimal
+from django.db import models
+from django.utils import timezone
 
 
 class Price(models.Model):
@@ -210,3 +212,66 @@ class Visit(models.Model):
     
     def __str__(self):
         return f"Посещение {self.visitor.full_name} - {self.arrival_time.strftime('%d.%m.%Y %H:%M')}"
+
+class EquipmentCategory(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название категории")
+    
+    class Meta:
+        verbose_name = "Категория оборудования"
+        verbose_name_plural = "Категории оборудования"
+    
+    def __str__(self):
+        return self.name
+
+class Equipment(models.Model):
+    TYPE_CHOICES = [
+        ('room', 'Комната'),
+        ('hardware', 'Железо'),
+        ('peripheral', 'Периферия'),
+    ]
+    
+    name = models.CharField(max_length=100, verbose_name="Название")
+    equipment_type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name="Тип")
+    specification = models.CharField(max_length=200, verbose_name="Характеристики", blank=True)
+    category = models.ForeignKey(EquipmentCategory, on_delete=models.CASCADE, verbose_name="Категория")
+    is_active = models.BooleanField(default=True, verbose_name="Активно")
+    
+    class Meta:
+        verbose_name = "Оборудование"
+        verbose_name_plural = "Оборудование"
+    
+    def __str__(self):
+        return f"{self.name} - {self.specification}"
+
+
+class SimpleBooking(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Ожидание'),
+        ('confirmed', 'Подтверждено'),
+        ('cancelled', 'Отменено'),
+    ]
+    
+    DURATION_CHOICES = [
+        (1, '1 час'),
+        (2, '2 часа'),
+        (3, '3 часа'), 
+        (4, '4 часа'),
+    ]
+    
+    full_name = models.CharField(max_length=200, verbose_name='ФИО')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    email = models.EmailField(verbose_name='Email')
+    booking_date = models.DateField(verbose_name='Дата бронирования')
+    booking_time = models.TimeField(verbose_name='Время бронирования')
+    duration = models.IntegerField(verbose_name='Продолжительность', choices=DURATION_CHOICES, default=1)
+    guests = models.IntegerField(verbose_name='Количество гостей', default=1)
+    comments = models.TextField(verbose_name='Комментарии', blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Бронирование'
+        verbose_name_plural = 'Бронирования'
+    
+    def __str__(self):
+        return f"{self.full_name} - {self.booking_date} {self.booking_time}"

@@ -1,0 +1,266 @@
+[
+  {
+    "model": "hello.clubinfo",
+    "pk": 1,
+    "fields": {
+      "name": "COLIZEUM",
+      "address": "ПРОСПЕКТ МИРА 55, СУРГУТ",
+      "description": "COLIZEUM Сургут - это компьютерный клуб, оснащенный передовым оборудованием, которое соответствует всем требованиям современных игр. У нас вы найдете комфортные игровые зоны, профессиональное оборудование и уютную атмосферу для настоящих геймеров."
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 1,
+    "fields": {
+      "time_period": "17:00 - 08:00",
+      "price": "140.00",
+      "duration": "1 час",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 2,
+    "fields": {
+      "time_period": "17:00 - 08:00",
+      "price": "380.00",
+      "duration": "Пакет вечер 3 часа (17:00 - 20:00)",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 3,
+    "fields": {
+      "time_period": "17:00 - 08:00",
+      "price": "570.00",
+      "duration": "Пакет вечер 5 часов (15:00 - 20:00)",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 4,
+    "fields": {
+      "time_period": "08:00 - 17:00",
+      "price": "120.00",
+      "duration": "1 час",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 5,
+    "fields": {
+      "time_period": "08:00 - 17:00",
+      "price": "320.00",
+      "duration": "Пакет День 4 часа (12:00 - 16:00)",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 6,
+    "fields": {
+      "time_period": "08:00 - 17:00",
+      "price": "490.00",
+      "duration": "Пакет День 6 часов (12:00 - 18:00)",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 7,
+    "fields": {
+      "time_period": "Ночной тариф",
+      "price": "550.00",
+      "duration": "Пакет Ночь 10 часов (22:00 - 08:00)",
+      "is_dinner_price": false
+    }
+  },
+  {
+    "model": "hello.price",
+    "pk": 8,
+    "fields": {
+      "time_period": "Утренний тариф",
+      "price": "100.00",
+      "duration": "1 час (08:00 - 12:00)",
+      "is_dinner_price": true
+    }
+  },
+  {
+    "model": "hello.equipmentcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Компьютерные компоненты"
+    }
+  },
+  {
+    "model": "hello.equipmentcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Периферия"
+    }
+  },
+  {
+    "model": "hello.equipmentcategory",
+    "pk": 3,
+    "fields": {
+      "name": "Игровые зоны"
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 1,
+    "fields": {
+      "name": "Процессор",
+      "equipment_type": "hardware",
+      "specification": "Intel Core i5-9400F",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 2,
+    "fields": {
+      "name": "Видеокарта",
+      "equipment_type": "hardware",
+      "specification": "NVIDIA GeForce RTX 2060 6GB",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 3,
+    "fields": {
+      "name": "Оперативная память",
+      "equipment_type": "hardware",
+      "specification": "16GB DDR4 3200MHz",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 4,
+    "fields": {
+      "name": "SSD накопитель",
+      "equipment_type": "hardware",
+      "specification": "512GB NVMe M.2",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 5,
+    "fields": {
+      "name": "Материнская плата",
+      "equipment_type": "hardware",
+      "specification": "ASUS TUF B360-PRO GAMING",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 6,
+    "fields": {
+      "name": "Блок питания",
+      "equipment_type": "hardware",
+      "specification": "650W 80+ Bronze",
+      "category": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 7,
+    "fields": {
+      "name": "Монитор",
+      "equipment_type": "peripheral",
+      "specification": "ASUS 27\" 165Hz 1ms",
+      "category": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 8,
+    "fields": {
+      "name": "Клавиатура",
+      "equipment_type": "peripheral",
+      "specification": "ASUS TUF Gaming K7 Mechanical",
+      "category": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 9,
+    "fields": {
+      "name": "Мышь",
+      "equipment_type": "peripheral",
+      "specification": "ASUS TUF M3 Gaming",
+      "category": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 10,
+    "fields": {
+      "name": "Наушники",
+      "equipment_type": "peripheral",
+      "specification": "ASUS TUF H3 Gaming Headset",
+      "category": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 11,
+    "fields": {
+      "name": "Игровое кресло",
+      "equipment_type": "peripheral",
+      "specification": "DXRacer Gaming Chair",
+      "category": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 12,
+    "fields": {
+      "name": "Основной зал",
+      "equipment_type": "room",
+      "specification": "20 игровых мест, кондиционер",
+      "category": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 13,
+    "fields": {
+      "name": "VIP комната",
+      "equipment_type": "room",
+      "specification": "4 места, изоляция, большой телевизор",
+      "category": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "hello.equipment",
+    "pk": 14,
+    "fields": {
+      "name": "Турнирная зона",
+      "equipment_type": "room",
+      "specification": "10 мест для киберспортивных турниров",
+      "category": 3,
+      "is_active": true
+    }
+  }
+]
