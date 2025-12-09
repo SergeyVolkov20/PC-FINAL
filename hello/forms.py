@@ -1,10 +1,10 @@
 from django import forms
-from .models import SimpleBooking
+from .models import WebsiteBooking
 from django.utils import timezone
 
-class BookingForm(forms.ModelForm):
+class WebsiteBookingForm(forms.ModelForm):
     class Meta:
-        model = SimpleBooking
+        model = WebsiteBooking
         fields = ['full_name', 'phone', 'email', 'booking_date', 'booking_time', 'duration', 'guests', 'comments']
         widgets = {
             'booking_date': forms.DateInput(attrs={
@@ -36,7 +36,7 @@ class BookingForm(forms.ModelForm):
             'duration': forms.Select(attrs={
                 'class': 'form-select',
                 'style': 'color: white !important; background-color: #2d2d2d !important;'
-            }),
+            }, choices=[(i, f'{i} час' + ('а' if 2 <= i <= 4 else '' if i == 1 else 'ов')) for i in range(1, 9)]),
             'guests': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'min': 1,
@@ -50,13 +50,4 @@ class BookingForm(forms.ModelForm):
                 'style': 'color: white !important;'
             }),
         }
-        labels = {
-            'full_name': 'ФИО',
-            'phone': 'Телефон',
-            'email': 'Email',
-            'booking_date': 'Дата бронирования',
-            'booking_time': 'Время бронирования', 
-            'duration': 'Продолжительность (часы)',
-            'guests': 'Количество гостей',
-            'comments': 'Комментарии',
-        }
+

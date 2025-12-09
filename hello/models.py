@@ -1,261 +1,183 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinValueValidator
-from decimal import Decimal
-from django.db import models
-from django.utils import timezone
 
 
-class Price(models.Model):
-    time_period = models.CharField(max_length=100, verbose_name="Временной период")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
-    duration = models.CharField(max_length=50, verbose_name="Продолжительность")
-    is_dinner_price = models.BooleanField(default=False, verbose_name="Обеденная цена")
+class Demo(models.Model):
     
     class Meta:
-        verbose_name = "Цена"
-        verbose_name_plural = "Цены"
-    
-    def __str__(self):
-        return f"{self.time_period} - {self.price} руб."
+        managed = False
+        db_table = 'demo'
+        verbose_name = 'Демо'
+        verbose_name_plural = 'Демо'
 
-class ClubInfo(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Название клуба")
-    address = models.CharField(max_length=300, verbose_name="Адрес")
-    description = models.TextField(verbose_name="Описание")
+class User(models.Model):
+    email = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    data_joined = models.DateField(blank=True, null=True)  # или DateTimeField
+    full_name = models.CharField(max_length=255, blank=True, null=True)
     
     class Meta:
-        verbose_name = "Информация о клубе"
-        verbose_name_plural = "Информация о клубе"
-    
-    def __str__(self):
-        return self.name
-
-
-class User(AbstractUser):
-    email = models.EmailField(unique=True, verbose_name='Почта')
-    phone_number = models.CharField(max_length=20, verbose_name='Номер телефона')
-    registration_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации')
-    username = None
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-    
-  
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-        related_name='custom_user_set', 
-        related_query_name='user',
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        related_name='custom_user_set',  
-        related_query_name='user',
-    )
-    
-    class Meta:
+        managed = False
+        db_table = 'user'
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-    
-    def __str__(self):
-        return f"{self.email} ({self.phone_number})"
 
-class Position(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Название')
-    salary = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        verbose_name='Зарплата',
-        validators=[MinValueValidator(Decimal('0.00'))]
-    )
+class Role(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     class Meta:
-        verbose_name = 'Должность'
-        verbose_name_plural = 'Должности'
-    
-    def __str__(self):
-        return self.title
-
-class Staff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    position = models.ForeignKey(Position, on_delete=models.PROTECT, verbose_name='Должность')
-    passport = models.CharField(max_length=100, verbose_name='Паспорт')
-    full_name = models.CharField(max_length=200, verbose_name='ФИО')
-    email = models.EmailField(verbose_name='Почта')
-    phone_number = models.CharField(max_length=20, verbose_name='Номер телефона')
-    
-    class Meta:
-        verbose_name = 'Персонал'
-        verbose_name_plural = 'Персонал'
-    
-    def __str__(self):
-        return self.full_name
-
-class Shift(models.Model):
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, verbose_name='Персонал')
-    start_time = models.DateTimeField(verbose_name='Время начала')
-    end_time = models.DateTimeField(verbose_name='Время окончания')
-    
-    class Meta:
-        verbose_name = 'Смена'
-        verbose_name_plural = 'Смены'
-    
-    def __str__(self):
-        return f"{self.staff.full_name} - {self.start_time.strftime('%d.%m.%Y %H:%M')}"
-
-class GameStation(models.Model):
-    STATUS_CHOICES = [
-        ('active', 'Активна'),
-        ('maintenance', 'На обслуживании'),
-        ('inactive', 'Неактивна'),
-    ]
-    
-    name = models.CharField(max_length=100, verbose_name='Название')
-    status = models.CharField(
-        max_length=20, 
-        choices=STATUS_CHOICES, 
-        default='active',
-        verbose_name='Статус'
-    )
-    
-    class Meta:
-        verbose_name = 'Игровая станция'
-        verbose_name_plural = 'Игровые станции'
-    
-    def __str__(self):
-        return self.name
-
-class GameZone(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Название')
-    description = models.TextField(verbose_name='Описание', blank=True)
-    hourly_rate = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        verbose_name='Часовая стоимость',
-        validators=[MinValueValidator(Decimal('0.00'))]
-    )
-    characteristics = models.TextField(verbose_name='Характеристики', blank=True)
-    is_active = models.BooleanField(default=True, verbose_name='Активно')
-    game_station = models.ForeignKey(
-        GameStation, 
-        on_delete=models.CASCADE, 
-        verbose_name='Игровая станция'
-    )
-    
-    class Meta:
-        verbose_name = 'Игровая зона'
-        verbose_name_plural = 'Игровые зоны'
-    
-    def __str__(self):
-        return self.name
+        managed = False
+        db_table = 'role'
+        verbose_name = 'Роль'
+        verbose_name_plural = 'Роли'
 
 class Visitor(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    full_name = models.CharField(max_length=200, verbose_name='ФИО')
-    phone_number = models.CharField(max_length=20, verbose_name='Номер телефона')
+    user_id = models.IntegerField(blank=True, null=True)
+    last_activity = models.DateTimeField(blank=True, null=True)
+    ip_address = models.CharField(max_length=45, blank=True, null=True)
     
     class Meta:
+        managed = False
+        db_table = 'visitor'
         verbose_name = 'Посетитель'
         verbose_name_plural = 'Посетители'
-    
-    def __str__(self):
-        return self.full_name
 
-class Booking(models.Model):
-    STATUS_CHOICES = [
-        ('pending', 'Ожидание'),
-        ('confirmed', 'Подтверждено'),
-        ('active', 'Активно'),
-        ('completed', 'Завершено'),
-        ('cancelled', 'Отменено'),
-    ]
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    status = models.CharField(
-        max_length=20, 
-        choices=STATUS_CHOICES, 
-        default='pending',
-        verbose_name='Статус'
-    )
-    total_cost = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        verbose_name='Стоимость',
-        validators=[MinValueValidator(Decimal('0.00'))]
-    )
-    guest_count = models.PositiveIntegerField(verbose_name='Кол-во гостей')
-    game_zone = models.ForeignKey(GameZone, on_delete=models.CASCADE, verbose_name='Игровая зона')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
+class Staff(models.Model):
+    email = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    role_id = models.IntegerField(blank=True, null=True)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
     
     class Meta:
-        verbose_name = 'Бронирование'
-        verbose_name_plural = 'Бронирования'
-    
-    def __str__(self):
-        return f"Бронирование #{self.id} - {self.user.email}"
+        managed = False
+        db_table = 'staff'
+        verbose_name = 'Сотрудник'
+        verbose_name_plural = 'Сотрудники'
 
-class Visit(models.Model):
-    visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE, verbose_name='Посетитель')
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, verbose_name='Бронирование')
-    arrival_time = models.DateTimeField(verbose_name='Время прихода')
-    departure_time = models.DateTimeField(null=True, blank=True, verbose_name='Время ухода')
+class GamingZone(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    specifications = models.TextField(blank=True, null=True)
     
     class Meta:
+        managed = False
+        db_table = 'gaming_zone'
+        verbose_name = 'Игровая зона'
+        verbose_name_plural = 'Игровые зоны'
+
+class GamingStation(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=50, blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'gaming_station'
+        verbose_name = 'Игровая станция'
+        verbose_name_plural = 'Игровые станции'
+
+class Shifts(models.Model):
+    staff_id = models.IntegerField(blank=True, null=True)
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'shifts'
+        verbose_name = 'Смена'
+        verbose_name_plural = 'Смены'
+
+class Visits(models.Model):
+    booking_id = models.IntegerField(blank=True, null=True)
+    visitor_id = models.IntegerField(blank=True, null=True)
+    check_in_time = models.DateTimeField(blank=True, null=True)
+    check_out_time = models.DateTimeField(blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'visits'
         verbose_name = 'Посещение'
         verbose_name_plural = 'Посещения'
-    
-    def __str__(self):
-        return f"Посещение {self.visitor.full_name} - {self.arrival_time.strftime('%d.%m.%Y %H:%M')}"
 
-class EquipmentCategory(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название категории")
+class Bookings(models.Model):
+    gaming_zone_id = models.IntegerField(blank=True, null=True)
+    guest_count = models.IntegerField(blank=True, null=True)
+    user_id = models.IntegerField(blank=True, null=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     class Meta:
-        verbose_name = "Категория оборудования"
-        verbose_name_plural = "Категории оборудования"
+        managed = False
+        db_table = 'bookings'
+        verbose_name = 'Бронирование'
+        verbose_name_plural = 'Бронирования'
+
+class ClubInfo(models.Model):
+    name = models.CharField(max_length=200, verbose_name='Название клуба')
+    address = models.TextField(verbose_name='Адрес')
+    description = models.TextField(blank=True, verbose_name='Описание')
+    phone = models.CharField(max_length=20, blank=True, verbose_name='Телефон')
+    email = models.EmailField(blank=True, verbose_name='Email')
+    working_hours = models.CharField(max_length=100, blank=True, verbose_name='Часы работы')
     
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = 'Информация о клубе'
+        verbose_name_plural = 'Информация о клубах'
+
+class EquipmentCategory(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Название категории')
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Категория оборудования'
+        verbose_name_plural = 'Категории оборудования'
 
 class Equipment(models.Model):
-    TYPE_CHOICES = [
+    EQUIPMENT_TYPES = [
         ('room', 'Комната'),
-        ('hardware', 'Железо'),
+        ('hardware', 'Комплектующие'),
         ('peripheral', 'Периферия'),
     ]
     
-    name = models.CharField(max_length=100, verbose_name="Название")
-    equipment_type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name="Тип")
-    specification = models.CharField(max_length=200, verbose_name="Характеристики", blank=True)
-    category = models.ForeignKey(EquipmentCategory, on_delete=models.CASCADE, verbose_name="Категория")
-    is_active = models.BooleanField(default=True, verbose_name="Активно")
-    
-    class Meta:
-        verbose_name = "Оборудование"
-        verbose_name_plural = "Оборудование"
+    name = models.CharField(max_length=200, verbose_name='Название')
+    equipment_type = models.CharField(
+        max_length=20, 
+        choices=EQUIPMENT_TYPES,
+        verbose_name='Тип оборудования'
+    )
+    specification = models.TextField(verbose_name='Характеристики')
+    category = models.ForeignKey(
+        EquipmentCategory, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        verbose_name='Категория'
+    )
+    is_active = models.BooleanField(default=True, verbose_name='Активно')
+    image = models.ImageField(
+        upload_to='equipment/', 
+        blank=True, 
+        null=True,
+        verbose_name='Изображение'
+    )
     
     def __str__(self):
-        return f"{self.name} - {self.specification}"
+        return f"{self.name} ({self.get_equipment_type_display()})"
+    
+    class Meta:
+        verbose_name = 'Оборудование'
+        verbose_name_plural = 'Оборудование'
 
-
-class SimpleBooking(models.Model):
+class WebsiteBooking(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Ожидание'),
+        ('pending', 'Ожидает подтверждения'),
         ('confirmed', 'Подтверждено'),
         ('cancelled', 'Отменено'),
-    ]
-    
-    DURATION_CHOICES = [
-        (1, '1 час'),
-        (2, '2 часа'),
-        (3, '3 часа'), 
-        (4, '4 часа'),
+        ('completed', 'Завершено'),
     ]
     
     full_name = models.CharField(max_length=200, verbose_name='ФИО')
@@ -263,15 +185,21 @@ class SimpleBooking(models.Model):
     email = models.EmailField(verbose_name='Email')
     booking_date = models.DateField(verbose_name='Дата бронирования')
     booking_time = models.TimeField(verbose_name='Время бронирования')
-    duration = models.IntegerField(verbose_name='Продолжительность', choices=DURATION_CHOICES, default=1)
+    duration = models.IntegerField(verbose_name='Продолжительность (часы)', default=1)
     guests = models.IntegerField(verbose_name='Количество гостей', default=1)
     comments = models.TextField(verbose_name='Комментарии', blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        verbose_name = 'Бронирование'
-        verbose_name_plural = 'Бронирования'
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name='Статус'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     def __str__(self):
         return f"{self.full_name} - {self.booking_date} {self.booking_time}"
+    
+    class Meta:
+        verbose_name = 'Бронирование с сайта'
+        verbose_name_plural = 'Бронирования с сайта'
+        ordering = ['-booking_date', '-booking_time']

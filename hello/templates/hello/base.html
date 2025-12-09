@@ -350,13 +350,32 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">COLIZEUM</a>
-            <span class="navbar-text">ARENA LOUNGE BAR</span>
+ <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">COLIZEUM</a>
+        <span class="navbar-text">ARENA LOUNGE BAR</span>
+        
+     
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarContent">
+         
+            <form class="d-flex ms-auto" method="get" action="/search/">
+                <div class="input-group">
+                    <input type="text" class="form-control" 
+                           placeholder="Поиск" 
+                           name="q"
+                           style="background: rgb(255, 243, 243); color: rgb(0, 0, 0); border: 1px solid #555;">
+                    <button class="btn btn-outline-warning" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
         </div>
-    </nav>
-
+    </div>
+</nav>
     <main>
         {% block content %}
         {% endblock %}
