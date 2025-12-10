@@ -1,7 +1,27 @@
 from django import forms
-from .models import WebsiteBooking
+from .models import WebsiteBooking,Drink
 from django.utils import timezone
 
+
+class DrinkSearchForm(forms.Form):
+    query = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Поиск напитков...',
+            'class': 'form-control',
+            'style': 'background: #1a1a1a; color: white; border: 1px solid #ffcc00;'
+        })
+    )
+    
+    category = forms.ChoiceField(
+        required=False,
+        choices=[('', 'Все категории')] + Drink.CATEGORY_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'style': 'background: #1a1a1a; color: white; border: 1px solid #ffcc00;'
+        })
+    )
+    
 class WebsiteBookingForm(forms.ModelForm):
     class Meta:
         model = WebsiteBooking

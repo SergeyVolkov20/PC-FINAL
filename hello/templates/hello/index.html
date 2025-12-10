@@ -177,4 +177,161 @@
         </div>
     </div>
 </section>
+<!-- Добавьте после секции с оборудованием в index.html -->
+<section id="drinks" class="py-5 bg-dark">
+    <div class="container">
+        <h2 class="section-title">ПОПУЛЯРНЫЕ НАПИТКИ</h2>
+        
+        <div class="row">
+            {% if popular_drinks %}
+                {% for drink in popular_drinks %}
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="drink-mini-card text-center h-100">
+                        <div class="drink-icon mb-3 position-relative">
+                            {% if drink.image_url %}
+                            <img src="{{ drink.image_url }}" alt="{{ drink.name }}" 
+                                 class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid var(--primary);">
+                            {% else %}
+                            <div class="rounded-circle bg-warning d-inline-flex align-items-center justify-content-center" 
+                                 style="width: 100px; height: 100px; border: 2px solid var(--primary);">
+                                <i class="fas fa-glass-whiskey fa-2x text-dark"></i>
+                            </div>
+                            {% endif %}
+                            {% if drink.is_popular %}
+                            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-1" 
+                                  style="font-size: 0.7rem;">
+                                <i class="fas fa-star me-1"></i>TOP
+                            </span>
+                            {% endif %}
+                        </div>
+                        <h6 class="text-light mb-1" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                            {{ drink.name }}
+                        </h6>
+                        <p class="text-muted small mb-2">
+                            <span class="badge bg-secondary">{{ drink.get_category_display }}</span>
+                        </p>
+                        <p class="text-warning mb-3 fw-bold" style="font-size: 1.2rem;">{{ drink.price }} ₽</p>
+                        <div class="mt-auto">
+                            <button class="btn btn-sm btn-outline-warning order-drink-btn" 
+                                    data-drink="{{ drink.name }}"
+                                    data-price="{{ drink.price }}">
+                                <i class="fas fa-cart-plus me-1"></i>Заказать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-4">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Популярные напитки пока не добавлены. Зайдите позже!
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'drinks_menu' %}" class="btn btn-warning">
+                <i class="fas fa-list me-2"></i>Смотреть всю барную карту
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .drink-mini-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #333;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .drink-mini-card:hover {
+        transform: translateY(-5px);
+        border-color: #ffcc00;
+        box-shadow: 0 10px 25px rgba(255, 204, 0, 0.2);
+    }
+    
+    .drink-icon img {
+        transition: transform 0.3s ease;
+    }
+    
+    .drink-mini-card:hover .drink-icon img {
+        transform: scale(1.05);
+    }
+    
+    .order-drink-btn {
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+    
+    .order-drink-btn:hover {
+        background-color: #ffcc00 !important;
+        color: #000 !important;
+        transform: scale(1.05);
+    }
+</style>
+
+    <script>
+    // Обработка заказа напитков
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.order-drink-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const drinkName = this.getAttribute('data-drink');
+                const drinkPrice = this.getAttribute('data-price');
+                
+                // Создаем уведомление
+                showDrinkOrderNotification(drinkName, drinkPrice);
+                
+                // Эффект анимации на кнопке
+                this.innerHTML = '<i class="fas fa-check me-1"></i>Добавлено';
+                this.classList.remove('btn-outline-warning');
+                this.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-cart-plus me-1"></i>Заказать';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-warning');
+                }, 2000);
+            });
+        });
+        
+        function showDrinkOrderNotification(name, price) {
+            // Создаем временное уведомление
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed top-0 end-0 p-3';
+            notification.style.zIndex = '1055';
+            notification.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header bg-warning">
+                        <strong class="me-auto">Добавлено в заказ</strong>
+                        <button type="button" class="btn-close" onclick="this.parentElement.parentElement.parentElement.remove()"></button>
+                    </div>
+                    <div class="toast-body bg-dark text-light">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                            <div>
+                                <strong>${name}</strong><br>
+                                <small class="text-warning">${price} ₽</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Автоматическое скрытие через 3 секунды
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    });
+    </script>
+</style>
 {% endblock %}

@@ -1,6 +1,33 @@
 from django.db import models
 
-
+class Drink(models.Model):
+    CATEGORY_CHOICES = [
+        ('coffee', 'Кофе'),
+        ('tea', 'Чай'),
+        ('soda', 'Лимонады/Коктейли'),
+        ('energy', 'Энергетики'),
+        ('alcohol', 'Алкогольные коктейли'),
+        ('cold', 'Холодные напитки'),
+        ('hot', 'Горячие напитки'),
+        ('snack', 'Закуски/Десерты'),
+    ]
+    
+    name = models.CharField(max_length=200, verbose_name="Название")
+    description = models.TextField(blank=True, verbose_name="Описание")
+    price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Цена (₽)")
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, verbose_name="Категория")
+    image_url = models.CharField(max_length=500, blank=True, verbose_name="Ссылка на изображение")
+    volume = models.CharField(max_length=50, blank=True, verbose_name="Объем")
+    is_available = models.BooleanField(default=True, verbose_name="В наличии")
+    is_popular = models.BooleanField(default=False, verbose_name="Популярный")
+    
+    def __str__(self):
+        return f"{self.name} - {self.price}₽"
+    
+    class Meta:
+        verbose_name = "Напиток"
+        verbose_name_plural = "Напитки"
+        ordering = ['category', 'price']
 class Demo(models.Model):
     
     class Meta:

@@ -361,7 +361,13 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarContent">
-         
+        
+               <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="{% url 'drinks_menu' %}">
+                        <i class="fas fa-glass-whiskey me-1"></i>Барная карта
+                    </a>
+                </li>
             <form class="d-flex ms-auto" method="get" action="/search/">
                 <div class="input-group">
                     <input type="text" class="form-control" 
@@ -404,7 +410,33 @@
             });
         });
         
-      
+      ocument.addEventListener('DOMContentLoaded', function() {
+
+    document.querySelectorAll('.nav-link[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                   
+                    const navbarToggler = document.querySelector('.navbar-toggler');
+                    if (navbarToggler && !navbarToggler.classList.contains('collapsed')) {
+                        const navbarCollapse = document.querySelector('#navbarContent');
+                        if (navbarCollapse.classList.contains('show')) {
+                            new bootstrap.Collapse(navbarCollapse).toggle();
+                        }
+                    }
+                }
+            }
+        });
+    });
+});
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'

@@ -1,9 +1,28 @@
 from django.contrib import admin
 from .models import (
     User, Bookings, Visitor, GamingStation, 
-    Staff, Role, GamingZone, Shifts, Visits, Demo, WebsiteBooking
+    Staff, Role, GamingZone, Shifts, Visits, Demo, WebsiteBooking, Drink
 )
 
+@admin.register(Drink)
+class DrinkAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'price', 'is_available', 'is_popular')
+    list_filter = ('category', 'is_available', 'is_popular')
+    search_fields = ('name', 'description')
+    list_editable = ('price', 'is_available', 'is_popular')
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('name', 'description', 'category', 'price', 'volume')
+        }),
+        ('Изображение', {
+            'fields': ('image_url',),
+            'description': 'Можно использовать ссылки на изображения с сервисов типа Imgur или Unsplash'
+        }),
+        ('Статус', {
+            'fields': ('is_available', 'is_popular')
+        }),
+    )
+    
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name', 'email', 'phone_number', 'data_joined')

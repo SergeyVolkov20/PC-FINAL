@@ -1,0 +1,111 @@
+{% extends 'hello/base.html' %}
+
+{% block title %}Результаты поиска - COLIZEUM{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">РЕЗУЛЬТАТЫ ПОИСКА</h2>
+        
+        <div class="card bg-dark border-warning mb-5">
+            <div class="card-body">
+                <form method="get" action="{% url 'search' %}" class="row g-2">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" 
+                               name="q" 
+                               value="{{ query }}"
+                               placeholder="Что вы ищете?"
+                               style="background: #1a1a1a; color: white; border: 1px solid #ffcc00;">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-search me-1"></i>Искать
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if query %}
+            {% if has_results %}
+                <!-- Результаты поиска напитков -->
+                {% if drinks_results %}
+                <div class="mb-5">
+                    <h4 class="text-warning mb-4">
+                        <i class="fas fa-glass-whiskey me-2"></i>Напитки ({{ drinks_results|length }})
+                    </h4>
+                    
+                    <div class="row">
+                        {% for drink in drinks_results %}
+                        <div class="col-md-3 col-sm-6 mb-4">
+                            <div class="card drink-card h-100 border-warning">
+                                <div class="card-body bg-dark text-light">
+                                    <h5 class="card-title text-warning">{{ drink.name }}</h5>
+                                    <p class="card-text small text-muted">{{ drink.description|truncatewords:10 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="badge bg-warning text-dark">{{ drink.price }} ₽</span>
+                                        <a href="{% url 'drinks_menu' %}" class="btn btn-sm btn-outline-warning">
+                                            Заказать
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Здесь можно добавить результаты поиска по другим моделям -->
+                
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-warning mb-3"></i>
+                    <h4 class="text-light">Ничего не найдено</h4>
+                    <p class="text-muted">Попробуйте изменить поисковый запрос</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-4x text-warning mb-3"></i>
+                <h4 class="text-light">Введите поисковый запрос</h4>
+                <p class="text-muted">Начните поиск напитков, оборудования и других услуг</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+И не забудьте добавить модель Drink в models.py если еще не добавили:
+
+python
+# hello/models.py
+from django.db import models
+
+class Drink(models.Model):
+    CATEGORY_CHOICES = [
+        ('coffee', 'Кофе'),
+        ('tea', 'Чай'),
+        ('soda', 'Лимонады/Коктейли'),
+        ('energy', 'Энергетики'),
+        ('alcohol', 'Алкогольные коктейли'),
+        ('cold', 'Холодные напитки'),
+        ('hot', 'Горячие напитки'),
+        ('snack', 'Закуски/Десерты'),
+    ]
+    
+    name = models.CharField(max_length=200, verbose_name="Название")
+    description = models.TextField(blank=True, verbose_name="Описание")
+    price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Цена (₽)")
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, verbose_name="Категория")
+    image_url = models.CharField(max_length=500, blank=True, verbose_name="Ссылка на изображение")
+    volume = models.CharField(max_length=50, blank=True, verbose_name="Объем")
+    is_available = models.BooleanField(default=True, verbose_name="В наличии")
+    is_popular = models.BooleanField(default=False, verbose_name="Популярный")
+    
+    def __str__(self):
+        return f"{self.name} - {self.price}₽"
+    
+    class Meta:
+        verbose_name = "Напиток"
+        verbose_name_plural = "Напитки"
+        ordering = ['category', 'price']
