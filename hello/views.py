@@ -99,7 +99,7 @@ def drinks_menu(request):
         'categories': categories,
         'form': form,
     }
-    return render(request, 'hello/drinks_menu.html', context)
+    return render(request, 'hello/drinks.html', context)
 
 def search(request):
     """Поиск по сайту"""
@@ -126,3 +126,22 @@ def search(request):
         }
     
     return render(request, 'hello/search_results.html', context)
+# someapp/views.py - добавьте эту функцию
+from django.shortcuts import render, get_object_or_404
+from .models import Drink
+
+def drink_detail(request, drink_id):
+    """Детальная страница напитка"""
+    drink = get_object_or_404(Drink, id=drink_id)
+    
+    # Получаем похожие напитки из той же категории
+    similar_drinks = Drink.objects.filter(
+        category=drink.category,
+        is_available=True
+    ).exclude(id=drink.id)[:4]
+    
+    context = {
+        'drink': drink,
+        'similar_drinks': similar_drinks,
+    }
+    return render(request, 'hello/drink_detail.html', context)

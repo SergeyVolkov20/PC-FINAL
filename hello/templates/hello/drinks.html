@@ -1,3 +1,4 @@
+<!-- hello/drinks.html -->
 {% extends 'hello/base.html' %}
 
 {% block title %}Барная карта - COLIZEUM{% endblock %}
@@ -5,177 +6,432 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <h2 class="section-title">БАРНАЯ КАРТА</h2>
-        
-        <!-- Форма поиска -->
-        <div class="card bg-dark border-warning mb-5 fade-in">
-            <div class="card-body">
+        <!-- Заголовок и навигация -->
+   <!-- Форма поиска - исправленный вариант -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-dark border-warning">
+            <div class="card-body p-4">
                 <div class="row align-items-center">
+                    <!-- Текст слева -->
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <h5 class="text-warning mb-0">
+                            <i class="fas fa-filter me-2"></i>Фильтр напитков
+                        </h5>
+                        <p class="text-muted small mb-0 mt-1">Найдите нужный напиток</p>
+                    </div>
+                    
+                    <!-- Форма поиска справа -->
                     <div class="col-md-8">
                         <form method="get" class="row g-2">
-                            <div class="col-md-6">
-                                {{ form.query }}
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <input type="text" 
+                                           name="query" 
+                                           class="form-control border-warning bg-dark text-light" 
+                                           placeholder="Поиск напитков..."
+                                           value="{{ request.GET.query|default:'' }}">
+                                    <span class="input-group-text bg-warning border-warning">
+                                        <i class="fas fa-search text-dark"></i>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                {{ form.category }}
+                            
+                            <div class="col-md-5">
+                                <select name="category" class="form-control border-warning bg-dark text-light">
+                                    <option value="">Все категории</option>
+                                    <option value="coffee" {% if request.GET.category == 'coffee' %}selected{% endif %}>Кофе</option>
+                                    <option value="tea" {% if request.GET.category == 'tea' %}selected{% endif %}>Чай</option>
+                                    <option value="soda" {% if request.GET.category == 'soda' %}selected{% endif %}>Лимонады/Коктейли</option>
+                                    <option value="energy" {% if request.GET.category == 'energy' %}selected{% endif %}>Энергетики</option>
+                                    <option value="alcohol" {% if request.GET.category == 'alcohol' %}selected{% endif %}>Алкогольные коктейли</option>
+                                    <option value="cold" {% if request.GET.category == 'cold' %}selected{% endif %}>Холодные напитки</option>
+                                    <option value="hot" {% if request.GET.category == 'hot' %}selected{% endif %}>Горячие напитки</option>
+                                    <option value="snack" {% if request.GET.category == 'snack' %}selected{% endif %}>Закуски/Десерты</option>
+                                </select>
                             </div>
+                            
                             <div class="col-md-2">
-                                <button type="submit" class="btn btn-warning w-100">
-                                    <i class="fas fa-search me-1"></i>Найти
-                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-warning flex-grow-1">
+                                        <i class="fas fa-search me-1"></i>Найти
+                                    </button>
+                                    {% if request.GET.query or request.GET.category %}
+                                    <a href="{% url 'drinks_menu' %}" class="btn btn-outline-light">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </form>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{% url 'drinks_menu' %}" class="btn btn-outline-warning">
-                            <i class="fas fa-redo me-1"></i>Сбросить
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+        
+        <!-- Статистика -->
+        {% if categories %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert bg-dark border-warning text-center">
+                    <i class="fas fa-info-circle me-2 text-warning"></i>
+                    <span class="text-light">Найдено напитков: 
+                        <span class="text-warning fw-bold">{{ drinks.count }}</span>
+                    </span>
+                    <span class="text-light mx-3">|</span>
+                    <span class="text-light">Категорий: 
+                        <span class="text-warning fw-bold">{{ categories|length }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
         
         <!-- Карточки напитков по категориям -->
         {% if categories %}
             {% for category_name, category_drinks in categories.items %}
-            <div class="category-section mb-5 fade-in">
-                <h3 class="text-warning mb-4 border-bottom pb-2">
-                    <i class="fas fa-glass-whiskey me-2"></i>{{ category_name }}
+            <div class="category-section mb-5 animate__animated animate__fadeIn">
+                <h3 class="text-warning mb-4 pb-3 border-bottom border-warning">
+                    <i class="fas fa-tag me-2"></i>{{ category_name }}
+                    <span class="badge bg-warning text-dark ms-2">{{ category_drinks|length }}</span>
                 </h3>
                 
                 <div class="row">
                     {% for drink in category_drinks %}
                     <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                        <div class="drink-card card h-100 border-warning">
-                            <div class="card-img-wrapper" style="height: 180px; overflow: hidden; background: #2a2a2a;">
-                                {% if drink.image_url %}
-                                <img src="{{ drink.image_url }}" class="card-img-top" alt="{{ drink.name }}" 
-                                     style="height: 100%; width: 100%; object-fit: cover;">
-                                {% else %}
-                                <div class="h-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-glass-whiskey fa-3x text-warning"></i>
+                        <!-- Ссылка на детальную страницу -->
+                        <a href="{% url 'drink_detail' drink.id %}" class="text-decoration-none drink-card-link">
+                            <div class="drink-card card h-100 border-warning position-relative">
+                                <!-- Изображение -->
+                                <div class="drink-image-wrapper">
+                                    {% if drink.image_url %}
+                                    <img src="{{ drink.image_url }}" 
+                                         class="drink-image" 
+                                         alt="{{ drink.name }}">
+                                    {% else %}
+                                    <div class="drink-placeholder">
+                                        <i class="fas fa-glass-whiskey"></i>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Бейдж популярного -->
+                                    {% if drink.is_popular %}
+                                    <span class="drink-badge badge bg-warning text-dark">
+                                        <i class="fas fa-star me-1"></i>Популярный
+                                    </span>
+                                    {% endif %}
+                                    
+                                    <!-- Бейдж недоступного -->
+                                    {% if not drink.is_available %}
+                                    <span class="drink-badge badge bg-danger">
+                                        <i class="fas fa-times me-1"></i>Нет в наличии
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
-                                {% if drink.is_popular %}
-                                <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2">
-                                    <i class="fas fa-star me-1"></i>Популярный
-                                </span>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-light mb-2">{{ drink.name }}</h5>
                                 
-                                {% if drink.volume %}
-                                <div class="text-muted small mb-2">
-                                    <i class="fas fa-weight me-1"></i>{{ drink.volume }}
-                                </div>
-                                {% endif %}
-                                
-                                {% if drink.description %}
-                                <p class="card-text text-muted small flex-grow-1">{{ drink.description }}</p>
-                                {% endif %}
-                                
-                                <div class="mt-auto pt-3 border-top border-secondary">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h4 class="text-warning mb-0">{{ drink.price }} ₽</h4>
-                                        <button class="btn btn-sm btn-outline-warning order-drink" 
-                                                data-drink="{{ drink.name }}"
-                                                data-price="{{ drink.price }}">
-                                            <i class="fas fa-plus me-1"></i>Заказать
-                                        </button>
+                                <!-- Информация о напитке -->
+                                <div class="card-body d-flex flex-column p-3">
+                                    <!-- Название -->
+                                    <h5 class="drink-name text-light mb-2">{{ drink.name }}</h5>
+                                    
+                                    <!-- Объем -->
+                                    {% if drink.volume %}
+                                    <div class="drink-volume text-muted small mb-2">
+                                        <i class="fas fa-weight me-1"></i>{{ drink.volume }}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Краткое описание -->
+                                    {% if drink.description %}
+                                    <p class="drink-description text-muted small flex-grow-1 mb-3">
+                                        {{ drink.description|truncatechars:80 }}
+                                    </p>
+                                    {% endif %}
+                                    
+                                    <!-- Цена и кнопка -->
+                                    <div class="mt-auto pt-3 border-top border-secondary">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <!-- Цена -->
+                                            <h4 class="drink-price text-warning mb-0">{{ drink.price }} ₽</h4>
+                                            
+                                            <!-- Иконка подробнее -->
+                                            <span class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-eye me-1"></i>Подробнее
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                <!-- Эффект при наведении -->
+                                <div class="drink-hover-effect"></div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     {% endfor %}
                 </div>
             </div>
             {% endfor %}
+            
+            <!-- Кнопка наверх -->
+            <div class="text-center mt-5">
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+                        class="btn btn-outline-warning">
+                    <i class="fas fa-arrow-up me-1"></i>Наверх
+                </button>
+            </div>
+            
         {% else %}
-            <div class="text-center py-5 fade-in">
-                <i class="fas fa-glass-whiskey fa-4x text-warning mb-3"></i>
-                <h4 class="text-light">Напитки не найдены</h4>
-                <p class="text-muted">Попробуйте изменить параметры поиска</p>
+            <!-- Если напитки не найдены -->
+            <div class="text-center py-5 animate__animated animate__fadeIn">
+                <div class="empty-state mb-4">
+                    <i class="fas fa-glass-whiskey fa-4x text-warning mb-3"></i>
+                    <h4 class="text-light mb-3">Напитки не найдены</h4>
+                    <p class="text-muted mb-4">Попробуйте изменить параметры поиска или выберите другую категорию</p>
+                    <a href="{% url 'drinks_menu' %}" class="btn btn-warning">
+                        <i class="fas fa-redo me-1"></i>Показать все напитки
+                    </a>
+                </div>
             </div>
         {% endif %}
     </div>
 </section>
 
 <style>
+    /* Основные стили карточек */
     .drink-card {
         background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-        transition: all 0.3s ease;
-        border: 1px solid transparent;
-    }
-    
-    .drink-card:hover {
-        transform: translateY(-5px);
-        border-color: #ffcc00;
-        box-shadow: 0 10px 25px rgba(255, 204, 0, 0.2);
-    }
-    
-    .category-section {
-        animation-delay: calc(var(--category-index) * 0.1s);
-    }
-    
-    .card-img-wrapper {
+        border-radius: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        overflow: hidden;
         position: relative;
     }
     
-    .order-drink {
-        transition: all 0.2s ease;
+    .drink-card-link {
+        display: block;
     }
     
-    .order-drink:hover {
-        background-color: #ffcc00 !important;
-        color: #000 !important;
+    .drink-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: #ffcc00;
+        box-shadow: 0 15px 35px rgba(255, 204, 0, 0.15);
+    }
+    
+    /* Изображение напитка */
+    .drink-image-wrapper {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+        background: #2a2a2a;
+    }
+    
+    .drink-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .drink-card:hover .drink-image {
+        transform: scale(1.1);
+    }
+    
+    .drink-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffcc00;
+        font-size: 3rem;
+    }
+    
+    /* Бейджи */
+    .drink-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        z-index: 2;
+    }
+    
+    .drink-badge.bg-danger {
+        right: 10px;
+        left: auto;
+    }
+    
+    /* Текст */
+    .drink-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .drink-card:hover .drink-name {
+        color: #ffcc00;
+    }
+    
+    .drink-description {
+        line-height: 1.4;
+        opacity: 0.8;
+    }
+    
+    .drink-price {
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    /* Эффект при наведении */
+    .drink-hover-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255, 204, 0, 0.1) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .drink-card:hover .drink-hover-effect {
+        opacity: 1;
+    }
+    
+    /* Анимации */
+    .category-section {
+        animation-duration: 0.8s;
+    }
+    
+    .animate__fadeIn {
+        animation-name: fadeIn;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .drink-image-wrapper {
+            height: 150px;
+        }
+        
+        .drink-name {
+            font-size: 1rem;
+        }
+        
+        .drink-price {
+            font-size: 1.3rem;
+        }
+    }
+    
+    /* Пустое состояние */
+    .empty-state {
+        padding: 3rem;
+        background: rgba(255, 204, 0, 0.05);
+        border-radius: 15px;
+        border: 2px dashed rgba(255, 204, 0, 0.3);
     }
 </style>
 
 <script>
-    // Анимация появления категорий
     document.addEventListener('DOMContentLoaded', function() {
+        // Плавное появление категорий с задержкой
         const categories = document.querySelectorAll('.category-section');
         categories.forEach((category, index) => {
-            category.style.setProperty('--category-index', index);
             category.style.animationDelay = `${index * 0.1}s`;
         });
         
-        // Обработка заказа напитков
-        document.querySelectorAll('.order-drink').forEach(button => {
-            button.addEventListener('click', function() {
-                const drinkName = this.getAttribute('data-drink');
-                const drinkPrice = this.getAttribute('data-price');
-                
-                // Здесь можно добавить логику заказа
-                // Например, открыть модальное окно или добавить в корзину
-                
-                // Временное уведомление
-                const toast = document.createElement('div');
-                toast.className = 'position-fixed top-0 end-0 p-3';
-                toast.style.zIndex = '1050';
-                toast.innerHTML = `
-                    <div class="toast show" role="alert">
-                        <div class="toast-header bg-warning">
-                            <strong class="me-auto">Добавлено в заказ</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                        </div>
-                        <div class="toast-body bg-dark text-light">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            <strong>${drinkName}</strong> добавлен в ваш заказ
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(toast);
-                
-         
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
+        // Подсветка активной категории в поиске
+        const currentCategory = "{{ request.GET.category }}";
+        if (currentCategory) {
+            const categoryHeaders = document.querySelectorAll('.category-section h3');
+            categoryHeaders.forEach(header => {
+                const categoryName = header.textContent.toLowerCase();
+                if (categoryName.includes(currentCategory)) {
+                    header.style.animation = 'pulse 2s infinite';
+                }
+            });
+        }
+        
+        // Анимация пульсации для активной категории
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { border-color: #ffcc00; }
+                50% { border-color: transparent; }
+                100% { border-color: #ffcc00; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Сохранение позиции скролла при возврате
+        let scrollPosition = 0;
+        
+        // Запоминаем позицию перед переходом на детальную страницу
+        document.querySelectorAll('.drink-card-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                scrollPosition = window.pageYOffset;
+                sessionStorage.setItem('drinksScrollPosition', scrollPosition);
             });
         });
+        
+        // Восстановление позиции при загрузке страницы
+        const savedPosition = sessionStorage.getItem('drinksScrollPosition');
+        if (savedPosition && !window.location.search.includes('detail')) {
+            setTimeout(() => {
+                window.scrollTo(0, parseInt(savedPosition));
+                sessionStorage.removeItem('drinksScrollPosition');
+            }, 100);
+        }
+        
+        // Быстрый заказ по клику на карточку (альтернатива)
+        document.querySelectorAll('.drink-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Если кликнули не на кнопку "Подробнее"
+                if (!e.target.closest('.btn-outline-warning')) {
+                    // Можно добавить быстрый заказ
+                    // const drinkName = this.querySelector('.drink-name').textContent;
+                    // quickOrder(drinkName);
+                }
+            });
+        });
+        
+        // Функция быстрого заказа
+        function quickOrder(drinkName) {
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed top-0 end-0 p-3';
+            notification.style.zIndex = '1060';
+            notification.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header bg-warning">
+                        <strong class="me-auto">Быстрый заказ</strong>
+                        <button type="button" class="btn-close" 
+                                onclick="this.closest('.position-fixed').remove()"></button>
+                    </div>
+                    <div class="toast-body bg-dark text-light">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        <strong>${drinkName}</strong> добавлен в корзину
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 2000);
+        }
     });
 </script>
 {% endblock %}

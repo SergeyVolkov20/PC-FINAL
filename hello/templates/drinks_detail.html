@@ -1,0 +1,234 @@
+<!-- hello/drink_detail.html -->
+{% extends 'hello/base.html' %}
+
+{% block title %}{{ drink.name }} - COLIZEUM{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Кнопка назад -->
+        <div class="mb-4">
+            <a href="{% url 'drinks_menu' %}" class="btn btn-outline-warning">
+                <i class="fas fa-arrow-left me-1"></i>Назад к меню
+            </a>
+        </div>
+        
+        <!-- Основная информация о напитке -->
+        <div class="row mb-5">
+            <!-- Изображение -->
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="drink-image-card card border-warning">
+                    <div class="card-img-wrapper" style="height: 400px;">
+                        {% if drink.image_url %}
+                        <img src="{{ drink.image_url }}" 
+                             class="card-img-top" 
+                             alt="{{ drink.name }}"
+                             style="height: 100%; width: 100%; object-fit: cover;">
+                        {% else %}
+                        <div class="h-100 d-flex align-items-center justify-content-center bg-dark">
+                            <i class="fas fa-glass-whiskey fa-5x text-warning"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if drink.is_popular %}
+                        <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 p-2">
+                            <i class="fas fa-star me-1"></i>ПОПУЛЯРНЫЙ
+                        </span>
+                        {% endif %}
+                        
+                        {% if not drink.is_available %}
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-danger p-2">
+                                <i class="fas fa-times me-1"></i>НЕТ В НАЛИЧИИ
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Информация -->
+            <div class="col-lg-7">
+                <div class="card border-warning h-100">
+                    <div class="card-body p-4">
+                        <!-- Категория -->
+                        <div class="mb-3">
+                            <span class="badge bg-secondary fs-6">
+                                {{ drink.get_category_display }}
+                            </span>
+                        </div>
+                        
+                        <!-- Название -->
+                        <h1 class="display-5 text-light mb-3">{{ drink.name }}</h1>
+                        
+                        <!-- Цена -->
+                        <div class="mb-4">
+                            <h2 class="text-warning">{{ drink.price }} ₽</h2>
+                            {% if drink.volume %}
+                            <p class="text-muted">
+                                <i class="fas fa-weight me-1"></i>{{ drink.volume }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Описание -->
+                        {% if drink.description %}
+                        <div class="mb-4">
+                            <h5 class="text-light mb-2">Описание</h5>
+                            <p class="text-muted">{{ drink.description }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Статус -->
+                        <div class="mb-4">
+                            <h5 class="text-light mb-2">Статус</h5>
+                            <p class="{% if drink.is_available %}text-success{% else %}text-danger{% endif %}">
+                                <i class="fas {% if drink.is_available %}fa-check-circle{% else %}fa-times-circle{% endif %} me-1"></i>
+                                {% if drink.is_available %}В наличии{% else %}Нет в наличии{% endif %}
+                            </p>
+                        </div>
+                        
+                        <!-- Кнопка заказа -->
+                        <div class="mt-4">
+                            {% if drink.is_available %}
+                            <button class="btn btn-warning btn-lg w-100 order-btn" 
+                                    data-drink-id="{{ drink.id }}"
+                                    data-drink-name="{{ drink.name }}"
+                                    data-drink-price="{{ drink.price }}">
+                                <i class="fas fa-shopping-cart me-2"></i>Добавить в заказ
+                            </button>
+                            {% else %}
+                            <button class="btn btn-secondary btn-lg w-100" disabled>
+                                <i class="fas fa-clock me-2"></i>Скоро будет
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Похожие напитки -->
+        {% if similar_drinks %}
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-warning mb-4">Похожие напитки</h3>
+                <div class="row">
+                    {% for similar in similar_drinks %}
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                        <a href="{% url 'drink_detail' similar.id %}" class="text-decoration-none">
+                            <div class="card border-secondary h-100 drink-card">
+                                <div class="card-img-wrapper" style="height: 150px;">
+                                    {% if similar.image_url %}
+                                    <img src="{{ similar.image_url }}" 
+                                         class="card-img-top" 
+                                         alt="{{ similar.name }}"
+                                         style="height: 100%; width: 100%; object-fit: cover;">
+                                    {% else %}
+                                    <div class="h-100 d-flex align-items-center justify-content-center bg-dark">
+                                        <i class="fas fa-glass-whiskey fa-2x text-warning"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-light mb-1">{{ similar.name }}</h5>
+                                    <p class="text-muted small mb-2">{{ similar.get_category_display }}</p>
+                                    <h6 class="text-warning mb-0">{{ similar.price }} ₽</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .drink-image-card {
+        overflow: hidden;
+        border-radius: 10px;
+    }
+    
+    .card-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    
+    .drink-card {
+        transition: all 0.3s ease;
+        background: #1a1a1a;
+    }
+    
+    .drink-card:hover {
+        transform: translateY(-5px);
+        border-color: #ffcc00 !important;
+        box-shadow: 0 10px 20px rgba(255, 204, 0, 0.1);
+    }
+    
+    .order-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .order-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработка заказа
+        const orderBtn = document.querySelector('.order-btn');
+        if (orderBtn) {
+            orderBtn.addEventListener('click', function() {
+                const drinkId = this.getAttribute('data-drink-id');
+                const drinkName = this.getAttribute('data-drink-name');
+                const drinkPrice = this.getAttribute('data-drink-price');
+                
+                // Показываем уведомление
+                showOrderNotification(drinkName, drinkPrice);
+                
+                // Можно добавить логику AJAX запроса для сохранения заказа
+                // saveToCart(drinkId);
+            });
+        }
+        
+        function showOrderNotification(name, price) {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed top-0 end-0 p-3';
+            notification.style.zIndex = '1055';
+            notification.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header bg-warning">
+                        <strong class="me-auto">Добавлено в заказ</strong>
+                        <button type="button" class="btn-close" 
+                                onclick="this.closest('.position-fixed').remove()"></button>
+                    </div>
+                    <div class="toast-body bg-dark text-light">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                            <div>
+                                <strong>${name}</strong><br>
+                                <small class="text-warning">${price} ₽</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Авто-удаление через 3 секунды
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    });
+</script>
+{% endblock %}
